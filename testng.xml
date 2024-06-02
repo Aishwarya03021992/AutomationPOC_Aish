@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="/Users/presidio/Documents/SWAPA POC/Automation/SWAPAPOCAishwarya/src/test/java/Test">
+<!--        <parameter name="userName" value="112298849"></parameter>-->
+<!--        <parameter name="passWord" value="swapa8849"></parameter>-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="@Regression"-->
+<!--            </run>-->
+<!--        </groups>-->
+        <classes>
+            <class name="Test.SWAPAFunctions.LoginFunction">
+                <methods>
+                    <include name="Login"/>
+                </methods></class>
+            <class name="Test.SWAPAFunctions.PillotPollingFunction">
+                <methods><include name="resourceClick"/>
+                    <include name="validatePillotFormFilling"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
