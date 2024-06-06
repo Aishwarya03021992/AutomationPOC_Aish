@@ -33,7 +33,6 @@ public class LoginPageObject {
         driver.manage().window().maximize();
     }
 
-
     public void enterCredentials() throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         wait.until(ExpectedConditions.elementToBeClickable(loginHome)).click();

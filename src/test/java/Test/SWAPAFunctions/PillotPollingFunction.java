@@ -35,6 +35,14 @@ public class PillotPollingFunction {
         pillotForm.validatePillotFormFilling();
     }
 
+    @Test
+    public void validateDisabilityCalculator() throws InterruptedException {
+        login1.launchSWAPA();
+        login1.enterCredentials();
+        pillotForm.selectDisabilityCalculator();
+        pillotForm.enterDisabilityCalculatorValues();
+    }
+
     @AfterTest
     public void closeResource() {
         login1.quitSWAPA();

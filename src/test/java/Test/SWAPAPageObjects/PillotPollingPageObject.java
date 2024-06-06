@@ -6,6 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
@@ -30,7 +31,23 @@ public class PillotPollingPageObject {
     private By quest11 = By.xpath("(//label[@class='FormChoice__Container'][normalize-space()='No, I almost always drive'])");
     private By submitForm = By.xpath("(//button[@name='submit'][normalize-space()='Submit'])");
 
-    /** Functions of Login Module**/
+    /** Page Objects of 2024 Disability Calculator **/
+    private By calculators = By.xpath("//div[@class='dropdown-menu show']//a[contains(.,'Calculators')]");
+    private By disabilityCalculators = By.xpath("//div[@class='dropdown-menu show']//a[@class='dropdown-item'][normalize-space()='2024 Disability Calculator']");
+    private By seniority = By.name("seniority");
+    private By payRate = By.name("payrate");
+    private By STDRate = By.name("stdplan");
+    private By LTDRate = By.name("ltdplan");
+    private By taxRate = By.name("taxrate");
+    private By sickBank = By.name("sickbank");
+    private By birthDate = By.xpath("//input[@placeholder='01/01/0001']");
+    private By hireDate = By.xpath("//input[@placeholder='04/21/2024']");
+    private By lolTaxability = By.name("loltaxability");
+    private By sickUse = By.name("sickuse");
+    private By calculateButton = By.xpath("//button[normalize-space()='Calculate']");
+    private By disabilityCalculatorHeading = By.xpath("//h1[contains(text(),'2024 Disability Calculator')]");
+
+    /** Functions of Pillot Polling Module**/
     public PillotPollingPageObject(WebDriver driver)
     {
         this.driver=driver;
@@ -64,6 +81,57 @@ public class PillotPollingPageObject {
         driver.findElement(quest10).click();
         driver.findElement(quest11).click();
         driver.findElement(submitForm).click();
+    }
+
+    /** Functions of 2024 Disability Calculator Module**/
+    public void selectDisabilityCalculator() throws InterruptedException {
+        Actions actions = new Actions(driver);
+        WebElement menuHoverLink =  driver.findElement(Resources);
+        actions.moveToElement(menuHoverLink).perform();
+        Thread.sleep((2000));
+        WebElement calculator = driver.findElement(calculators);
+        calculator.click();
+        Thread.sleep((2000));
+        WebElement disabilityCalculator = driver.findElement(disabilityCalculators);
+        disabilityCalculator.click();
+    }
+
+    public void enterDisabilityCalculatorValues() throws InterruptedException {
+        Select drpSeniority = new Select(driver.findElement(seniority));
+        drpSeniority.selectByVisibleText("FO");
+
+        Select drpPayRate = new Select(driver.findElement(payRate));
+        drpPayRate.selectByIndex(1);
+
+        Select drpSTDPlan = new Select(driver.findElement(STDRate));
+        drpSTDPlan.selectByIndex(1);
+
+        Select drpLTDPlan = new Select(driver.findElement(LTDRate));
+        drpLTDPlan.selectByIndex(1);
+
+        Select drpTaxRate = new Select(driver.findElement(taxRate));
+        drpTaxRate.selectByIndex(1);
+
+        driver.findElement(sickBank).sendKeys("10.00");
+
+        driver.findElement(birthDate).clear();
+        driver.findElement(birthDate).sendKeys("08/09/1961");
+        driver.findElement(disabilityCalculatorHeading).click();
+
+        Thread.sleep(2000);
+        driver.findElement(hireDate).clear();
+        driver.findElement(hireDate).sendKeys("07/29/1993");
+        driver.findElement(disabilityCalculatorHeading).click();
+
+        Select drpLolTaxability = new Select(driver.findElement(lolTaxability));
+        drpLolTaxability.selectByIndex(1);
+
+        Select drpSickUse = new Select(driver.findElement(sickUse));
+        drpSickUse.selectByIndex(1);
+
+        Thread.sleep(2000);
+        driver.findElement(calculateButton).click();
+
     }
 
 }
