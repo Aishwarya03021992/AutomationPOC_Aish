@@ -1,5 +1,6 @@
 package Test.SWAPAPageObjects;
 
+import org.openqa.selenium.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -8,13 +9,19 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 
 import java.time.Duration;
+import java.util.List;
+
+import static org.openqa.selenium.By.tagName;
 
 public class PillotPollingPageObject {
     protected WebDriver driver;
 
-    /** Page Objects of Pillot Polling Module **/
+    /**
+     * Page Objects of Pillot Polling Module
+     **/
     private By Resources = By.xpath("(//span[normalize-space()='Resources'])[1]");
     private By SRCForms = By.xpath("//div[@class='dropdown-menu show']//a[contains(.,'SRC Forms')]");
     private By pillotPoll = By.xpath("(//div[@class='dropdown-menu show']/a[contains(.,'SRC Forms')]/..//div[5])/a[@class='dropdown-item']");
@@ -31,7 +38,9 @@ public class PillotPollingPageObject {
     private By quest11 = By.xpath("(//label[@class='FormChoice__Container'][normalize-space()='No, I almost always drive'])");
     private By submitForm = By.xpath("(//button[@name='submit'][normalize-space()='Submit'])");
 
-    /** Page Objects of 2024 Disability Calculator **/
+    /**
+     * Page Objects of 2024 Disability Calculator
+     **/
     private By calculators = By.xpath("//div[@class='dropdown-menu show']//a[contains(.,'Calculators')]");
     private By disabilityCalculators = By.xpath("//div[@class='dropdown-menu show']//a[@class='dropdown-item'][normalize-space()='2024 Disability Calculator']");
     private By seniority = By.name("seniority");
@@ -47,27 +56,33 @@ public class PillotPollingPageObject {
     private By calculateButton = By.xpath("//button[normalize-space()='Calculate']");
     private By disabilityCalculatorHeading = By.xpath("//h1[contains(text(),'2024 Disability Calculator')]");
 
-    /** Functions of Pillot Polling Module**/
-    public PillotPollingPageObject(WebDriver driver)
-    {
-        this.driver=driver;
+    /**
+     * Page Objects of 2024 Disability Calculator Table
+     **/
+    private By disabilityCalculatorTable = By.xpath("//table[@class='swapatable text-center']");
+    private By lastColumnHeader = By.xpath("(//tr//th[normalize-space()='Taxable Sick + Taxable LOL + STD + LTD A'])[1]");
+
+    /**
+     * Functions of Pillot Polling Module
+     **/
+    public PillotPollingPageObject(WebDriver driver) {
+        this.driver = driver;
     }
 
     //
     public void clickResources() throws InterruptedException {
         Actions actions = new Actions(driver);
-        WebElement menuHoverLink =  driver.findElement(Resources);
+        WebElement menuHoverLink = driver.findElement(Resources);
         actions.moveToElement(menuHoverLink).perform();
         Thread.sleep((2000));
-        WebElement subLink =  driver.findElement(SRCForms);
+        WebElement subLink = driver.findElement(SRCForms);
         subLink.click();
         Thread.sleep((2000));
-        WebElement subLinkPillot =  driver.findElement(pillotPoll);
+        WebElement subLinkPillot = driver.findElement(pillotPoll);
         subLinkPillot.click();
     }
 
-    public void validatePillotFormFilling()
-    {
+    public void validatePillotFormFilling() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(3));
         wait.until(ExpectedConditions.elementToBeClickable(quest01)).click();
         driver.findElement(quest02).click();
@@ -83,10 +98,12 @@ public class PillotPollingPageObject {
         driver.findElement(submitForm).click();
     }
 
-    /** Functions of 2024 Disability Calculator Module**/
+    /**
+     * Functions of 2024 Disability Calculator Module
+     **/
     public void selectDisabilityCalculator() throws InterruptedException {
         Actions actions = new Actions(driver);
-        WebElement menuHoverLink =  driver.findElement(Resources);
+        WebElement menuHoverLink = driver.findElement(Resources);
         actions.moveToElement(menuHoverLink).perform();
         Thread.sleep((2000));
         WebElement calculator = driver.findElement(calculators);
@@ -104,7 +121,7 @@ public class PillotPollingPageObject {
         drpPayRate.selectByIndex(1);
 
         Select drpSTDPlan = new Select(driver.findElement(STDRate));
-        drpSTDPlan.selectByIndex(1);
+        drpSTDPlan.selectByIndex(0);
 
         Select drpLTDPlan = new Select(driver.findElement(LTDRate));
         drpLTDPlan.selectByIndex(1);
@@ -132,6 +149,33 @@ public class PillotPollingPageObject {
         Thread.sleep(2000);
         driver.findElement(calculateButton).click();
 
+    }
+
+    public void printDisabilityTableHeader() throws InterruptedException {
+        WebElement Table = driver.findElement(disabilityCalculatorTable);
+        List<WebElement> rowsList = Table.findElements(By.tagName("tr"));
+        List<WebElement> columnsList = null;
+        for (WebElement row : rowsList) {
+            columnsList = row.findElements(By.tagName("th"));
+
+            for (WebElement column : columnsList) {
+                System.out.println("Column Header : " + column.getText() + ", ");
+            }
+
+        }
+
+    }
+
+    public void validateDisabilityTableHeader() throws InterruptedException {
+        WebElement Table = driver.findElement(disabilityCalculatorTable);
+        List<WebElement> rowsList = Table.findElements(By.tagName("tr"));
+        List<WebElement> columnsLists = Table.findElements(By.tagName("th"));
+        WebElement lastHeading = columnsLists.get(columnsLists.size() - 1);
+        String heading = lastHeading.getText();
+        System.out.println("Column Header : " + heading + ", ");
+        Assert.assertTrue(heading.contains("STD"), "Text 'STD' is not present");
+        Assert.assertTrue(heading.contains("LTD B"), "Text 'LTD B' is not present");
+        Assert.assertTrue(heading.contains("TAXABLE"), "Text 'TAXABLE' is not present");
     }
 
 }

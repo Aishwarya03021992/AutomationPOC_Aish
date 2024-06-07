@@ -41,6 +41,9 @@ public class PillotPollingFunction {
         login1.enterCredentials();
         pillotForm.selectDisabilityCalculator();
         pillotForm.enterDisabilityCalculatorValues();
+        pillotForm.printDisabilityTableHeader();
+        pillotForm.validateDisabilityTableHeader();
+
     }
 
     @AfterTest
