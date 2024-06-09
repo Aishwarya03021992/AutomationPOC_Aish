@@ -11,7 +11,10 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
-import java.time.Duration;
+import javax.swing.text.DateFormatter;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static org.openqa.selenium.By.tagName;
@@ -61,6 +64,7 @@ public class PillotPollingPageObject {
      **/
     private By disabilityCalculatorTable = By.xpath("//table[@class='swapatable text-center']");
     private By lastColumnHeader = By.xpath("(//tr//th[normalize-space()='Taxable Sick + Taxable LOL + STD + LTD A'])[1]");
+    private By retirementYear = By.xpath("(//td[normalize-space()='07-2026'])[1]");
 
     /**
      * Functions of Pillot Polling Module
@@ -168,7 +172,6 @@ public class PillotPollingPageObject {
 
     public void validateDisabilityTableHeader() throws InterruptedException {
         WebElement Table = driver.findElement(disabilityCalculatorTable);
-        List<WebElement> rowsList = Table.findElements(By.tagName("tr"));
         List<WebElement> columnsLists = Table.findElements(By.tagName("th"));
         WebElement lastHeading = columnsLists.get(columnsLists.size() - 1);
         String heading = lastHeading.getText();
@@ -176,6 +179,53 @@ public class PillotPollingPageObject {
         Assert.assertTrue(heading.contains("STD"), "Text 'STD' is not present");
         Assert.assertTrue(heading.contains("LTD B"), "Text 'LTD B' is not present");
         Assert.assertTrue(heading.contains("TAXABLE"), "Text 'TAXABLE' is not present");
+    }
+    public void validateRetirementYear()
+    {
+        String birthdate = "08/09/1961";
+        int retirementAge = 65;
+
+        // Correct date formatter for parsing birthdate
+        DateTimeFormatter birthdateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+        try {
+            // Parse the birthdate
+            LocalDate birthDate = LocalDate.parse(birthdate, birthdateFormatter);
+            // Calculate the retirement date by adding retirementAge years
+            LocalDate calculatedRetirementDate = birthDate.plusYears(retirementAge);
+            System.out.println("Given Retirement Date: " + calculatedRetirementDate);
+
+            // Get the year and month of the calculated retirement date
+            int localYear = calculatedRetirementDate.getYear();
+            System.out.println("Calculated Retirement Year: " + localYear);
+
+            int localMonth = calculatedRetirementDate.getMonthValue();
+            int localMonth01 = localMonth - 1;
+            System.out.println("Calculated Retirement Month: " + localMonth01);
+
+            // Fetch the application retirement month/year from the web element
+            WebElement rYear = driver.findElement(retirementYear);
+            String monthYear = rYear.getText(); // Assuming the text is in MM-yyyy format
+            System.out.println("Application Retirement Month/Year: " + monthYear);
+
+            // Correct date formatter for parsing the month/year
+            DateTimeFormatter monthYearFormatter = DateTimeFormatter.ofPattern("MM-yyyy");
+
+            // Parse the monthYear string directly as YearMonth
+            YearMonth applicationRetirementYearMonth = YearMonth.parse(monthYear, monthYearFormatter);
+
+            int applicationRetirementYear = applicationRetirementYearMonth.getYear();
+            System.out.println("Application Retirement Year: " + applicationRetirementYear);
+
+            int applicationRetirementMonth = applicationRetirementYearMonth.getMonthValue();
+            System.out.println("Application Retirement Month: " + applicationRetirementMonth);
+
+            Assert.assertEquals(localYear,applicationRetirementYear,"Calculated Retirement Year Matching with Application");
+            Assert.assertEquals(localMonth01, applicationRetirementMonth, "Calculated Retirement Month Matching with Application" );
+
+        } catch (DateTimeParseException e) {
+            System.err.println("Error parsing the date: " + e.getMessage());
+        }
     }
 
 }

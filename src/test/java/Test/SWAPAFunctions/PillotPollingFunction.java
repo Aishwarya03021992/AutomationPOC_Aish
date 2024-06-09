@@ -43,7 +43,7 @@ public class PillotPollingFunction {
         pillotForm.enterDisabilityCalculatorValues();
         pillotForm.printDisabilityTableHeader();
         pillotForm.validateDisabilityTableHeader();
-
+        pillotForm.validateRetirementYear();
     }
 
     @AfterTest
